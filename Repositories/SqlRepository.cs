@@ -3,53 +3,85 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LibraryManager.Data;
 using LibraryManager.Entities;
 using LibraryManager.Repositories.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManager.Repositories;
 
-    public class SqlRepository<T> : PersonInFile<T>, IRepository<T> where T : class, IEntity, new()
+public class SqlRepository<T> : PersonInFile, IRepository<T>
+where T : class, IEntity, new()
 {
-    private readonly DbSet<T> _dbSet;
-    private readonly DbContext _dbContext;
 
-    public event EventHandler<T> ItemAdded;
-    public event EventHandler<T> ItemRemoved;
+    private readonly LibraryManagerDbContext _libraryManagerDbContext;
 
-    public SqlRepository(DbContext dbContext)
+    public event EventHandler<Employee>? EmployeeAdded;
+    public event EventHandler<Book>? ItemAdded;
+    public event EventHandler<Employee>? EmployeeRemoved;
+    public event EventHandler<Book>? ItemRemoved;
+
+    public SqlRepository(LibraryManagerDbContext libraryManagerDbContext)
     {
-        _dbContext = dbContext;
-        _dbSet = _dbContext.Set<T>();
-
+        _libraryManagerDbContext = libraryManagerDbContext;
+        _libraryManagerDbContext.Database.EnsureCreated();
     }
-    public void Add(T item)
+    public void Add(Employee item)
     {
-        _dbSet.Add(item);
-        AddPersonToFile(item);
+        _libraryManagerDbContext.Employees.Add( new Employee()
+        {
+            FirstName = item.FirstName,
+            LastName = item.LastName,
+            Salary = item.Salary,
+            Status = item.Status
+        });
+        EmployeeAdded.Invoke(this, item);
+    }
+
+    public void Add(Book item)
+    {
+        _libraryManagerDbContext.Books.Add(new Book()
+        {
+            Title = item.Title,
+            Description = item.Description,
+            Author = item.Author,
+            Type = item.Type,
+            Price = item.Price
+        }); 
         ItemAdded.Invoke(this, item);
     }
 
-    public IEnumerable<T> GetAll()
+    public IEnumerable<T> GetAllPerson()
     {
-        return _dbSet.ToList().OrderBy(item => item.Id);
+        var empList = _libraryManagerDbContext.Employees.ToList();
+        return (IEnumerable<T>)empList;
+    }
+
+    public IEnumerable<T> GetAllBooks()
+    {
+        var empList = _libraryManagerDbContext.Books.ToList();
+        return (IEnumerable<T>)empList;
     }
 
     public T? GetById(int id)
     {
-        return _dbSet.Find(id);
+        return _libraryManagerDbContext.Find<T>(id);
     }
 
-    public void Remove(T item)
+    public void Remove(Employee item)
     {
-        _dbSet.Remove(item);
-        RemovePersonFromFile(item);
+        _libraryManagerDbContext.Remove(item);
+        EmployeeRemoved.Invoke(this, item);
+    }
+    public void Remove(Book item)
+    {
+        _libraryManagerDbContext.Remove(item);
         ItemRemoved.Invoke(this, item);
     }
 
     public void Save()
     {
-        _dbContext.SaveChanges();
+        _libraryManagerDbContext.SaveChanges();
     }
 }
 

@@ -10,6 +10,7 @@ namespace LibraryManager.Repositories
     public interface IReadRepository<out T> where T : class, IEntity
     {
         T? GetById(int id);
-        IEnumerable<T> GetAll();
+        IEnumerable<T> GetAllPerson();
+        IEnumerable<T> GetAllBooks();
     }
 }
