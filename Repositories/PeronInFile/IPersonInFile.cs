@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LibraryManager.Entities;
 
-namespace LibraryManager.Repositories.Extensions
+namespace LibraryManager.Repositories.PeronInFile
 {
     public interface IPersonInFile
     {

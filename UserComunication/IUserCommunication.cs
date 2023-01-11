@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LibraryManager.BookProvider;
+using LibraryManager.BookProvider.ChangeBookData;
 using LibraryManager.Entities;
 using LibraryManager.Repositories;
+using LibraryManager.UserComunication.MenuForBooks;
 
-namespace LibraryManager
+namespace LibraryManager.UserComunication
 {
     public interface IUserCommunication
     {
@@ -17,8 +19,8 @@ namespace LibraryManager
         void AddEmployee(IWriteRepository<Employee> sqlRepositoryOfPersons);
         void AddManager(IWriteRepository<Manager> sqlRepositoryOfPersons);
         void RemovePerson(IRepository<Employee> repository);
-        void ShowAllBooks(IReadRepository<Book> repository, IBookProvider bookProvider);
+        void ShowAllBooks(IRepository<Book> repository, IBookProvider bookProvider, IMenuForBooks menuForBooks, IChangeBookData changeBookData);
         void AddBook(IWriteRepository<Book> repository);
-        void RemoveBook(IRepository<Book> repository);
+        void RemoveBook(IRepository<Book> repository, IMenuForBooks menuForBooks);
     }
 }

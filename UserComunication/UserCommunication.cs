@@ -4,21 +4,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LibraryManager.BookProvider;
+using LibraryManager.BookProvider.ChangeBookData;
 using LibraryManager.Entities;
 using LibraryManager.Repositories;
-using LibraryManager.Repositories.Extensions;
+using LibraryManager.Repositories.ItemInFile;
+using LibraryManager.Repositories.PeronInFile;
+using LibraryManager.UserComunication.MenuForBooks;
 
-namespace LibraryManager;
+namespace LibraryManager.UserComunication;
 
 public class UserCommunication : IUserCommunication
 {
     private readonly IPersonInFile _personInFile;
     private readonly IItemInFile _itemInFile;
+    private readonly IMenuForBooks _menuForBooks;
+    private readonly IChangeBookData _changeBookData;
 
-    public UserCommunication(IPersonInFile personInFile, IItemInFile itemInFile)
+    public UserCommunication(IPersonInFile personInFile,
+        IItemInFile itemInFile,
+        IMenuForBooks menuForBooks,
+        IChangeBookData changeBookData)
     {
         _personInFile = personInFile;
         _itemInFile = itemInFile;
+        _menuForBooks = menuForBooks;
+        _changeBookData = changeBookData;
     }
 
     public void ShowMenu()
@@ -195,42 +205,77 @@ public class UserCommunication : IUserCommunication
             if (input.Key == ConsoleKey.D2) break;
         }
     }
-    void ShowBooksList(IReadRepository<Book> repository)
+
+    void ChangeBookData(IRepository<Book> repository, IMenuForBooks menuForBooks, IChangeBookData changeBookData)
     {
-        var list = repository.GetAllBooks();
-
-        Console.WriteLine("-----------------BOOKS LIST-----------------");
-        Console.WriteLine("ID    |   Title    |    Description    |   Author    |    Price    |    Type");
-        foreach (var book in list)
+        while (true)
         {
-            if (!(book.Description.Length >= 15))
-            {
-                string shortDescription = book.Description.Remove(book.Description.Length);
+            Console.Clear();
 
-                Console.WriteLine($"{book.Id}       \"{book.Title}\"     {shortDescription}       {book.Author}      {book.Price}$   {book.Type}");
+            menuForBooks.ShowBooksList(repository);
+
+            Console.Write("\nEnter id to change book: (or q to exit) ");
+            
+            var choice = Console.ReadLine();
+            if (choice.ToLower() == "q") break;
+
+            int bookId;
+            int.TryParse(choice, out bookId);
+            Console.Clear();
+
+            var bookToChange = repository.GetById(bookId);
+            if (bookToChange != null)
+            {
+                Console.WriteLine($"Author: {bookToChange.Author} Title: {bookToChange.Title}");
+                Console.WriteLine($"Price: {bookToChange.Price} Type: {bookToChange.Type}");
+
+                Console.WriteLine("-----------EDIT-----------");
+                Console.WriteLine("(1) Change Title");
+                Console.WriteLine("(2) Change Description");
+                Console.WriteLine("(3) Change Author");
+                Console.WriteLine("(4) Change Price");
+                Console.WriteLine("(5) Change Type");
+                Console.WriteLine("\n(q)  Back");
+
+                var end = Console.ReadKey();
+                Console.Clear();
+
+                if (end.Key == ConsoleKey.D1)
+                {
+                    changeBookData.ChangeTitle(bookToChange, repository);
+                }
+                else if (end.Key == ConsoleKey.D2)
+                {
+                    changeBookData.ChangeDescription(bookToChange, repository);
+                }
+                else if (end.Key == ConsoleKey.D3)
+                {
+                    changeBookData.ChangeAuthor(bookToChange, repository);
+                }
+                else if (end.Key == ConsoleKey.D4)
+                {
+                    changeBookData.ChangePrice(bookToChange, repository);
+                }
+                else if (end.Key == ConsoleKey.D5)
+                {
+                    changeBookData.ChangeType(bookToChange, repository);
+                }
+                else if (end.Key == ConsoleKey.Q) break;
             }
             else
             {
-                string shortDescription = book.Description.Remove(15);
+                Console.WriteLine("Incorrect value");
 
-                Console.WriteLine($"{book.Id}       \"{book.Title}\"     {shortDescription}...       {book.Author}      {book.Price}$   {book.Type}");
+                Back();
+                var end = Console.ReadKey();
+
+                if (end.Key == ConsoleKey.D2) break;
             }
         }
-
-
     }
 
-    void ShowBookOptions()
-    {
-        Console.WriteLine("\n------------MENU--------------");
-        Console.WriteLine("(1) Select only minimum price");
-        Console.WriteLine("(2) ALl accessible types");
-        Console.WriteLine("(3) Sort growing by price");
-        Console.WriteLine("(4) Sort decreasing by price");
-        Console.WriteLine("(5) Show all description");
-    }
 
-    public void ShowAllBooks(IReadRepository<Book> repository, IBookProvider bookProvider)
+    public void ShowAllBooks(IRepository<Book> repository, IBookProvider bookProvider, IMenuForBooks menuForBooks, IChangeBookData changeBookData)
     {
         while (true)
         {
@@ -238,80 +283,39 @@ public class UserCommunication : IUserCommunication
 
             var list = repository.GetAllBooks();
 
-            ShowBooksList(repository);
-            ShowBookOptions();
+            menuForBooks.ShowBooksList(repository);
+            menuForBooks.ShowBookOptions();
 
             Console.WriteLine("\n(q)  Back");
             var choiceInMethod = Console.ReadKey();
 
             if (choiceInMethod.Key == ConsoleKey.D1)
             {
-                Console.Clear();
-
-                ShowBooksList(repository);
-
-                Console.WriteLine("\n------------MENU--------------");
-                Console.WriteLine($"The lowest price for a book is {bookProvider.GetMinimumPriceOfAllBooks()}$");
-                Console.WriteLine("\n(q)  Back");
-                Console.ReadKey();
+                menuForBooks.ShowMininalPriceForBook(repository, bookProvider);
             }
             else if (choiceInMethod.Key == ConsoleKey.D2)
             {
-                Console.Clear();
-
-                ShowBooksList(repository);
-
-                Console.WriteLine("\n------------MENU--------------");
-
-                foreach (var type in bookProvider.GetUniqueBookType())
-                {
-                    Console.WriteLine(type);
-                }
-
-                Console.WriteLine("\n(q)  Back");
-                Console.ReadKey();
+                menuForBooks.ShowAllTypes(repository, bookProvider);
             }
             else if (choiceInMethod.Key == ConsoleKey.D3)
             {
-                Console.Clear();
-
-                Console.WriteLine("-----------------BOOKS LIST----------------- (Sort growing by price)");
-                Console.WriteLine("ID    |   Title    |    Description    |   Author    |    Price    |    Type");
-                foreach (var book in bookProvider.OderByPriceUp())
-                {
-                    Console.WriteLine($"{book.Id}       \"{book.Title}\" {book.Description}       {book.Author}      {book.Price}$   {book.Type}");
-                }
-
-                Console.WriteLine("\n(q)  Back");
-                Console.ReadKey();
+                menuForBooks.SortGrowingByPrice(repository, bookProvider);
             }
             else if (choiceInMethod.Key == ConsoleKey.D4)
             {
-                Console.Clear();
-
-                Console.WriteLine("-----------------BOOKS LIST----------------- (Sort decreasing by price)");
-                Console.WriteLine("ID    |   Title    |    Description    |   Author    |    Price    |    Type");
-                foreach (var book in bookProvider.OderByPriceDown())
-                {
-                    Console.WriteLine($"{book.Id}       \"{book.Title}\" {book.Description}       {book.Author}      {book.Price}$   {book.Type}");
-                }
-
-                Console.WriteLine("\n(q)  Back");
-                Console.ReadKey();
+                menuForBooks.SortDecreasingByPrice(repository, bookProvider);
             }
             else if (choiceInMethod.Key == ConsoleKey.D5)
             {
-                Console.Clear();
-
-                Console.WriteLine("-----------------BOOKS LIST-----------------");
-                Console.WriteLine("ID    |   Title    |    Description");
-                foreach (var book in list)
-                {
-                    Console.WriteLine($"{book.Id}       \"{book.Title}\"    {book.Description}");
-                }
-
-                Console.WriteLine("\n(q)  Back");
-                Console.ReadKey();
+                menuForBooks.ShowAllDescription(repository);
+            }
+            else if (choiceInMethod.Key == ConsoleKey.D6)
+            {
+                menuForBooks.GroupByAuthor(bookProvider);
+            }
+            else if (choiceInMethod.Key == ConsoleKey.D7)
+            {
+                ChangeBookData(repository, menuForBooks, changeBookData);
             }
             else if (choiceInMethod.Key == ConsoleKey.Q) break;
         }
@@ -353,12 +357,12 @@ public class UserCommunication : IUserCommunication
         }
     }
 
-    public void RemoveBook(IRepository<Book> repository)
+    public void RemoveBook(IRepository<Book> repository, IMenuForBooks menuForBooks)
     {
         while (true)
         {
             Console.Clear();
-            ShowBooksList(repository);
+            menuForBooks.ShowBooksList(repository);
 
             Console.WriteLine("\n");
             Console.Write("Enter Id to delete book: ");

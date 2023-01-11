@@ -14,5 +14,6 @@ namespace LibraryManager.BookProvider
         decimal GetMinimumPriceOfAllBooks();
         List<Book> OderByPriceDown();
         List<Book> OderByPriceUp();
+        void GrupByAuthor();
     }
 }

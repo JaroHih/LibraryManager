@@ -43,4 +43,29 @@ public class BookProvider : IBookProvider
         var result = book.OrderByDescending(book => book.Price).ToList();
         return result;
     }
+
+    public void GrupByAuthor()
+    {
+        var groups = _booksRepository.GetAllBooks()
+            .GroupBy(book => book.Author)
+            .Select(book => new
+            {
+                Name = book.Key,
+                Books = book.ToList()
+            })
+            .ToList();
+
+        foreach(var group in groups)
+        {
+            Console.WriteLine(group.Name);
+            Console.WriteLine("=========");
+            foreach(var book in group.Books)
+            {
+                Console.WriteLine($"\t{book.Title}: {book.Description}");
+            }
+            Console.WriteLine();
+        }
+    }
+
+
 }

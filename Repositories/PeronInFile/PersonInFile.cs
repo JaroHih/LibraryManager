@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using LibraryManager.Entities;
 
-namespace LibraryManager.Repositories.Extensions;
+namespace LibraryManager.Repositories.PeronInFile;
 
-public class PersonInFile :  IPersonInFile 
+public class PersonInFile : IPersonInFile
 {
     public const string personPath = "Resources\\Files\\EmployeesList.csv";
     public const string auditPath = "Resources\\Files\\AuditFile.csv";
@@ -71,11 +71,11 @@ public class PersonInFile :  IPersonInFile
     {
         var list = File.ReadAllLines(personPath)
             .Where(x => x.Length > 1);
-        
+
         if (list.Count() > 0)
         {
 
-            File.WriteAllText(personPath, String.Empty);
+            File.WriteAllText(personPath, string.Empty);
 
             foreach (var line in list)
             {

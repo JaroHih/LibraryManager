@@ -7,12 +7,16 @@ using System.Reflection.PortableExecutable;
 using LibraryManager.Data;
 using LibraryManager.Entities;
 using LibraryManager.Repositories;
-using LibraryManager.Repositories.Extensions;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using LibraryManager.BookProvider; 
+using LibraryManager.BookProvider;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore;
+using LibraryManager.UserComunication;
+using LibraryManager.Repositories.PeronInFile;
+using LibraryManager.Repositories.ItemInFile;
+using LibraryManager.UserComunication.MenuForBooks;
+using LibraryManager.BookProvider.ChangeBookData;
 
 namespace LibraryManager;
 
@@ -22,29 +26,27 @@ public class App : IApp
     private readonly IRepository<Book> _booksRepository;    
     private readonly IBookProvider _bookProvider;
     private readonly IUserCommunication _userCommunication;
-    private readonly IItemInFile _itemInFilel;
-    private readonly IPersonInFile _personInFile;
-
+    private readonly IMenuForBooks _menuForBooks;
+    private readonly IChangeBookData _changeBookData;
 
     public App(IRepository<Employee> employreesRepository,
                IRepository<Book> booksRepository,
         IBookProvider bookProvider,
         IUserCommunication userCommunication,
-        IPersonInFile personInFile,
-        IItemInFile itemInFile
+        IMenuForBooks menuForBooks  ,
+        IChangeBookData changeBookData
         )
     {
         _employreesRepository = employreesRepository;
         _booksRepository = booksRepository;
         _bookProvider = bookProvider;
         _userCommunication = userCommunication;
-        _personInFile = personInFile;
-        _itemInFilel = itemInFile;
+        _menuForBooks = menuForBooks;
+        _changeBookData = changeBookData;
     }
 
     public void Run()
     {
-
         _employreesRepository.EmployeeAdded += EventOnPersonAdded;
         _employreesRepository.EmployeeRemoved += EventOnPersonRemoved;
         _booksRepository.ItemAdded += EventOnItemAdded;
@@ -95,7 +97,7 @@ public class App : IApp
             }
             else if (choice.Key == ConsoleKey.D5)
             {
-                _userCommunication.ShowAllBooks(_booksRepository, _bookProvider);
+                _userCommunication.ShowAllBooks(_booksRepository, _bookProvider, _menuForBooks, _changeBookData);
             }
             else if (choice.Key == ConsoleKey.D6)
             {
@@ -103,7 +105,7 @@ public class App : IApp
             }
             else if ( choice.Key == ConsoleKey.D7)
             {
-                _userCommunication.RemoveBook(_booksRepository);
+                _userCommunication.RemoveBook(_booksRepository, _menuForBooks);
             }
             else if (choice.Key == ConsoleKey.Q) break;
         }

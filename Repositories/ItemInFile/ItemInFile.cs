@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LibraryManager.Entities;
 
-namespace LibraryManager.Repositories.Extensions;
+namespace LibraryManager.Repositories.ItemInFile;
 
 public class ItemInFile : IItemInFile
 {
@@ -45,7 +45,7 @@ public class ItemInFile : IItemInFile
         var list = File.ReadAllLines(bookList);
         if (list.Length > 0)
         {
-            File.WriteAllText(bookList, String.Empty);
+            File.WriteAllText(bookList, string.Empty);
             foreach (var line in list)
             {
                 var word = line.Split('-');

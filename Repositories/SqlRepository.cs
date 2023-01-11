@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LibraryManager.Data;
 using LibraryManager.Entities;
-using LibraryManager.Repositories.Extensions;
+using LibraryManager.Repositories.PeronInFile;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManager.Repositories;
@@ -65,7 +65,9 @@ where T : class, IEntity, new()
 
     public T? GetById(int id)
     {
-        return _libraryManagerDbContext.Find<T>(id);
+        var item = _libraryManagerDbContext.Find<T>(id);
+        if (item == null) return null;
+        else return item;
     }
 
     public void Remove(Employee item)

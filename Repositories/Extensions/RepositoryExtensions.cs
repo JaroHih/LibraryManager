@@ -9,15 +9,14 @@ namespace LibraryManager.Repositories.Extensions
 {
     public static class RepositoryExtensions
     {
-        //public static void AddBatch<T>(this IRepository<T> repository, T[] items)
-        //    where T : class, IEntity, new()
-        //    {
-        //        foreach (var item in items)
-        //        {
-        //            repository.Add(item);
-        //        }
+        public static void AddBatchForEmployee(this IRepository<Employee> repository, Employee[] items)
+        {
+            foreach (var item in items)
+            {
+                repository.Add(item);
+            }
 
-        //        repository.Save();
-        //    }
+            repository.Save();
+        }
     }
 }
