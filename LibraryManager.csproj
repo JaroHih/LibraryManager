@@ -14,19 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\Files\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Resources\Files\AuditFile.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\Files\BooksList.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\Files\EmployeesList.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <Folder Include="1_DataAccess\Resources\Files\" />
   </ItemGroup>
 
 </Project>
