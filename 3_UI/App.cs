@@ -126,34 +126,6 @@ public class App : IApp
                 default:
                     break;
             }
-
-            //if (choice.Key == ConsoleKey.D1)
-            //{
-
-            //}
-            //else if (choice.Key == ConsoleKey.D2)
-            //{
-
-            //}
-            //else if (choice.Key == ConsoleKey.D3)
-            //{
-
-            //}
-            //else if (choice.Key == ConsoleKey.D4)
-            //{
-
-            //}
-            //else if (choice.Key == ConsoleKey.D5)
-            //{
-            //}
-            //else if (choice.Key == ConsoleKey.D6)
-            //{
-            //}
-            //else if (choice.Key == ConsoleKey.D7)
-            //{
-
-            //}
-            //else if (choice.Key == ConsoleKey.Q) break;
         }
     }
 }
