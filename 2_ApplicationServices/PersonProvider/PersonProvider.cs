@@ -23,7 +23,7 @@ namespace LibraryManager._2_ApplicationServices.PersonProvider
         public void ShowPersonOptions()
         {
             Console.WriteLine("\n------------MENU--------------");
-            Console.WriteLine("(1) Add grade");
+            Console.WriteLine("(1) Set grade");
             Console.WriteLine("(2) Add comments");
             Console.WriteLine("(3) Show employee grades");
             Console.WriteLine("(4) Show employee comments");
@@ -55,29 +55,51 @@ namespace LibraryManager._2_ApplicationServices.PersonProvider
         public void AddGradeToEmployee()
         {
             Console.WriteLine("\n");
-            Console.Write("Enter personID to add grade: ");
+            Console.Write("Enter personID to set grade: ");
             var sing = Console.ReadLine();
             int id;
 
             if (!int.TryParse(sing, out id))
             {
                 Console.WriteLine("Incorrect value");
+                Console.WriteLine("(q) Back");
+                Console.ReadKey();
             }
             else
             {
                 var personToGread = _employeesRepository.GetById(id);
-                double correctGreade;
 
-                Console.Write("Enter grade (0 - 10): ");
-                var greade = Console.ReadLine();
-
-                if (!double.TryParse(greade, out correctGreade))
+                if(personToGread != null)
                 {
-                    Console.WriteLine("Incorrect value");
+                    double correctGreade;
+
+                    Console.Write("Enter grade (0 - 10): ");
+                    var greade = Console.ReadLine();
+
+                    if (!double.TryParse(greade, out correctGreade))
+                    {
+                        Console.WriteLine("Incorrect value");
+                    }
+                    else
+                    {
+                        if (correctGreade >= 0 && correctGreade <= 10)
+                        {
+                            personToGread.Grade = correctGreade;
+                            _employeesRepository.Save();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Grade is out of range!");
+                            Console.WriteLine("(q) Back");
+                            Console.ReadKey();
+                        }
+                    }
                 }
                 else
                 {
-                    personToGread.Grade = correctGreade;
+                    Console.WriteLine("Id is out of range!");
+                    Console.WriteLine("(q) Back");
+                    Console.ReadKey();
                 }
             }
         }
@@ -111,7 +133,8 @@ namespace LibraryManager._2_ApplicationServices.PersonProvider
                         Comments = comments,
                         PersonId = personToComments.Id
                     };
-                    _employeesRepository.Add(comment);
+                    _personComment.Add(comment);
+                    _personComment.Save();
                 }
             }
         }
@@ -158,9 +181,10 @@ namespace LibraryManager._2_ApplicationServices.PersonProvider
                 Comment = person.ToList()
             });
 
+            Console.WriteLine("============PersonCommnets============");
             foreach (var item in CommentInPerson)
             {
-                Console.WriteLine($"Person: {item.FullName}");
+                Console.WriteLine($"\nPerson: {item.FullName}");
                 Console.WriteLine($"==========");
                 foreach (var comment in item.Comment)
                 {

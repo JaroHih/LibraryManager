@@ -24,7 +24,7 @@ namespace LibraryManager;
 public class App : IApp
 {
     private readonly IRepository<Employee> _employreesRepository;
-    private readonly IRepository<Book> _booksRepository;    
+    private readonly IRepository<Book> _booksRepository;
     private readonly IBookProvider _bookProvider;
     private readonly IUserCommunication _userCommunication;
     private readonly IMenuForBooks _menuForBooks;
@@ -37,7 +37,7 @@ public class App : IApp
                IRepository<Book> booksRepository,
         IBookProvider bookProvider,
         IUserCommunication userCommunication,
-        IMenuForBooks menuForBooks  ,
+        IMenuForBooks menuForBooks,
         IChangeBookData changeBookData,
         IPersonInFile personInFile,
         IItemInFile itemInFile,
@@ -90,35 +90,70 @@ public class App : IApp
             _userCommunication.ShowMenu();
             var choice = Console.ReadKey();
 
-            if (choice.Key == ConsoleKey.D1)
+            if (choice.Key == ConsoleKey.Q) break;
+
+            switch (choice.Key)
             {
-                _userCommunication.ShowAllPerson(_employreesRepository, _personComments);
+                case ConsoleKey.D1:
+                    _userCommunication.ShowAllPerson(_employreesRepository, _personComments);
+                    break;
+
+                case ConsoleKey.D2:
+                    _userCommunication.AddEmployee(_employreesRepository);
+                    break;
+
+                case ConsoleKey.D3:
+                    _userCommunication.AddManager(_employreesRepository);
+                    break;
+
+                case ConsoleKey.D4:
+                    _userCommunication.RemovePerson(_employreesRepository);
+                    break;
+
+                case ConsoleKey.D5:
+                    _userCommunication.ShowAllBooks(_booksRepository, _bookProvider, _menuForBooks, _changeBookData);
+                    break;
+
+                case ConsoleKey.D6:
+                    _userCommunication.AddBook(_booksRepository);
+                    break;
+
+                case ConsoleKey.D7:
+                    _userCommunication.RemoveBook(_booksRepository, _menuForBooks);
+                    break;
+
+                case ConsoleKey.Q:
+                default:
+                    break;
             }
-            else if (choice.Key == ConsoleKey.D2)
-            {
-                _userCommunication.AddEmployee(_employreesRepository);
-            }
-            else if (choice.Key == ConsoleKey.D3)
-            {
-                _userCommunication.AddManager(_employreesRepository);
-            }
-            else if (choice.Key == ConsoleKey.D4)
-            {
-                _userCommunication.RemovePerson(_employreesRepository);
-            }
-            else if (choice.Key == ConsoleKey.D5)
-            {
-                _userCommunication.ShowAllBooks(_booksRepository, _bookProvider, _menuForBooks, _changeBookData);
-            }
-            else if (choice.Key == ConsoleKey.D6)
-            {
-                _userCommunication.AddBook(_booksRepository);
-            }
-            else if ( choice.Key == ConsoleKey.D7)
-            {
-                _userCommunication.RemoveBook(_booksRepository, _menuForBooks);
-            }
-            else if (choice.Key == ConsoleKey.Q) break;
+
+            //if (choice.Key == ConsoleKey.D1)
+            //{
+
+            //}
+            //else if (choice.Key == ConsoleKey.D2)
+            //{
+
+            //}
+            //else if (choice.Key == ConsoleKey.D3)
+            //{
+
+            //}
+            //else if (choice.Key == ConsoleKey.D4)
+            //{
+
+            //}
+            //else if (choice.Key == ConsoleKey.D5)
+            //{
+            //}
+            //else if (choice.Key == ConsoleKey.D6)
+            //{
+            //}
+            //else if (choice.Key == ConsoleKey.D7)
+            //{
+
+            //}
+            //else if (choice.Key == ConsoleKey.Q) break;
         }
     }
 }
