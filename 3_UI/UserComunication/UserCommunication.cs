@@ -143,6 +143,8 @@ public class UserCommunication : IUserCommunication
             else if (input.Key == ConsoleKey.D4)
             {
                 _personProvider.ShowComments();
+                Console.WriteLine("\n(q) Back");
+                Console.ReadKey();
             }
             else if (input.Key == ConsoleKey.D5)
             {
@@ -151,6 +153,10 @@ public class UserCommunication : IUserCommunication
             else if (input.Key == ConsoleKey.D6)
             {
                 ChangePersonData(repository);
+            }
+            else if(input.Key == ConsoleKey.D7)
+            {
+                _personProvider.RemovePersonComment();
             }
             else if (input.Key == ConsoleKey.Q) break;
         }

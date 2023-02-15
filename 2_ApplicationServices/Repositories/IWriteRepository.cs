@@ -10,6 +10,7 @@ namespace LibraryManager.Repositories
         void Add(PersonComments item);
         void Remove(Employee item);
         void Remove(Book item);
+        void Remove(PersonComments item);
         void Save();
     }
 }

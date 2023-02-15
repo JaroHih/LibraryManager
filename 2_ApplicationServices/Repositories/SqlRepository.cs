@@ -93,6 +93,11 @@ where T : class, IEntity, new()
         ItemRemoved.Invoke(this, item);
     }
 
+    public void Remove(PersonComments item)
+    {
+        _libraryManagerDbContext.Remove(item);
+    }
+
     public void Save()
     {
         _libraryManagerDbContext.SaveChanges();

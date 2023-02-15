@@ -13,6 +13,7 @@ namespace LibraryManager._2_ApplicationServices.PersonProvider
         void ShowPersonList();
         void AddGradeToEmployee();
         void AddCommentToEmployee();
+        void RemovePersonComment();
         void ShowGrades();
         void ShowComments();
         void ShowPersonListOrderByName();

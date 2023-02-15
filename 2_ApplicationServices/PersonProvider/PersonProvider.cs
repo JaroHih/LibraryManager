@@ -30,6 +30,7 @@ namespace LibraryManager._2_ApplicationServices.PersonProvider
             Console.WriteLine("(5) Sort alphabetically by names");
             Console.WriteLine("-------------------------------");
             Console.WriteLine("(6) Change Person data");
+            Console.WriteLine("(7) Delete comment");
         }
 
         public void ShowPersonOptionMenu()
@@ -139,6 +140,40 @@ namespace LibraryManager._2_ApplicationServices.PersonProvider
             }
         }
 
+        public void RemovePersonComment()
+        {
+            ShowComments();
+
+            Console.WriteLine("\n");
+            Console.Write("Enter personID to remove comments: ");
+            int id;
+
+            if (!int.TryParse(Console.ReadLine(), out id)) Console.WriteLine("Incorrect value");
+            else
+            {
+                var personToComments = _employeesRepository.GetById(id);
+                Console.Write("Enter CommentID to remove comment: ");
+
+                int commentToDeleteId;
+                
+                if(!int.TryParse(Console.ReadLine(), out commentToDeleteId)) Console.WriteLine("Incorrect value");
+                else
+                {
+                    var commentToDelete = _personComment.GetById(commentToDeleteId);
+
+                    Console.WriteLine("\nAre you sure?");
+                    Console.WriteLine("\n(1) Yes     (2) No");
+                    var choice = Console.ReadKey();
+
+                    if (choice.Key == ConsoleKey.D1)
+                    {
+                        _personComment.Remove(commentToDelete);
+                        _personComment.Save();
+                    }
+                }
+            }
+        }
+
         public void ShowGrades()
         {
             Console.Clear();
@@ -170,8 +205,8 @@ namespace LibraryManager._2_ApplicationServices.PersonProvider
                 (person, comment) =>
                 new
                 {
-                    FullName = person.FirstName + " " + person.LastName,
-                    comment.Comments
+                    FullName = person.FirstName + " " + person.LastName + " ID: " + person.Id,
+                    FullComment = comment.Comments + " ID: " + comment.Id
                 })
                 .GroupBy(x => x.FullName)
                 .Select(person =>
@@ -188,12 +223,9 @@ namespace LibraryManager._2_ApplicationServices.PersonProvider
                 Console.WriteLine($"==========");
                 foreach (var comment in item.Comment)
                 {
-                    Console.WriteLine($"\t\"{comment.Comments}\"");
+                    Console.WriteLine($"\t\"{comment.FullComment}\"");
                 }
             }
-
-            Console.WriteLine("\n(q) Back");
-            Console.ReadKey();
         }
 
         public void ShowPersonListOrderByName()
