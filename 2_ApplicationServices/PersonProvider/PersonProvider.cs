@@ -205,25 +205,27 @@ namespace LibraryManager._2_ApplicationServices.PersonProvider
                 (person, comment) =>
                 new
                 {
-                    FullName = person.FirstName + " " + person.LastName + " ID: " + person.Id,
-                    FullComment = comment.Comments + " ID: " + comment.Id
+                    FullName = "PersonID: " + person.Id + " FullName: " + person.FirstName + " " + person.LastName,
+                    FullComment = comment.Comments,
+                    CommentId = comment.Id
                 })
                 .GroupBy(x => x.FullName)
                 .Select(person =>
             new
             {
                 FullName = person.Key,
+                CommentId = person.Key,
                 Comment = person.ToList()
-            });
+            }); ;
 
-            Console.WriteLine("============PersonCommnets============");
+            Console.Write("============PersonCommnets============");
             foreach (var item in CommentInPerson)
             {
-                Console.WriteLine($"\nPerson: {item.FullName}");
+                Console.WriteLine($"\n{item.FullName}");
                 Console.WriteLine($"==========");
                 foreach (var comment in item.Comment)
                 {
-                    Console.WriteLine($"\t\"{comment.FullComment}\"");
+                    Console.WriteLine($"\tID: {comment.CommentId} \"{comment.FullComment}\"");
                 }
             }
         }

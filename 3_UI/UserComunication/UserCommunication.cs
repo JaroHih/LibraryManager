@@ -128,39 +128,44 @@ public class UserCommunication : IUserCommunication
 
             var input = Console.ReadKey();
 
-            if (input.Key == ConsoleKey.D1)
+            switch (input.Key)
             {
-                _personProvider.AddGradeToEmployee();
-            }
-            else if (input.Key == ConsoleKey.D2)
-            {
-                _personProvider.AddCommentToEmployee();
-            }
-            else if (input.Key == ConsoleKey.D3)
-            {
-                _personProvider.ShowGrades();
-            }
-            else if (input.Key == ConsoleKey.D4)
-            {
-                _personProvider.ShowComments();
-                Console.WriteLine("\n(q) Back");
-                Console.ReadKey();
-            }
-            else if (input.Key == ConsoleKey.D5)
-            {
-                _personProvider.ShowPersonListOrderByName();
-            }
-            else if (input.Key == ConsoleKey.D6)
-            {
-                ChangePersonData(repository);
-            }
-            else if(input.Key == ConsoleKey.D7)
-            {
-                _personProvider.RemovePersonComment();
-            }
-            else if (input.Key == ConsoleKey.Q) break;
-        }
+                case ConsoleKey.D1:
+                    _personProvider.AddGradeToEmployee();
+                    break;
 
+                case ConsoleKey.D2:
+                    _personProvider.AddCommentToEmployee();
+                    break;
+
+                case ConsoleKey.D3:
+                    _personProvider.ShowGrades();
+                    break;
+
+                case ConsoleKey.D4:
+                    _personProvider.ShowComments();
+                    Console.WriteLine("\n(q) Back");
+                    Console.ReadKey();
+                    break;
+
+                case ConsoleKey.D5:
+                    _personProvider.ShowPersonListOrderByName();
+                    break;
+
+                case ConsoleKey.D6:
+                    ChangePersonData(repository);
+                    break;
+
+                case ConsoleKey.D7:
+                    _personProvider.RemovePersonComment();
+                    break;
+
+                case ConsoleKey.Q:
+                default:
+                    break;
+            }
+            if (input.Key == ConsoleKey.Q) break;
+        }
     }
 
     public void AddEmployee(IWriteRepository<Employee> sqlRepositoryOfPersons)
